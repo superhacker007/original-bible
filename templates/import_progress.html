@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bible Import Progress - Paleo Hebrew Bible</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .import-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+        
+        .progress-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .log-container {
+            max-height: 400px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .control-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .control-btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            color: white;
+            transition: transform 0.3s ease;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .start-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        
+        .pause-btn {
+            background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+        }
+        
+        .stop-btn {
+            background: linear-gradient(135deg, #dc3545 0%, #e83e8c 100%);
+        }
+        
+        .status-active {
+            color: #28a745;
+        }
+        
+        .status-paused {
+            color: #ffc107;
+        }
+        
+        .status-stopped {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><i class="fas fa-download"></i> Bible Import Progress</h1>
+            <p class="subtitle">Importing Complete Hebrew Bible with Paleo Hebrew Text</p>
+        </div>
+    </header>
+
+    <div class="import-container">
+        <div class="progress-card">
+            <h2>Overall Import Progress</h2>
+            <div class="progress-bar">
+                <div class="progress-fill" id="overall-progress" style="width: 0%"></div>
+            </div>
+            <div class="progress-text">
+                <span id="progress-percentage">0%</span> Complete - 
+                <span id="current-book">Initializing...</span>
+                <span id="import-status" class="status-stopped">⏹️ Stopped</span>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="verses-imported">0</div>
+                <div class="stat-label">Verses Imported</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="chapters-completed">0</div>
+                <div class="stat-label">Chapters Complete</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="books-completed">0</div>
+                <div class="stat-label">Books Complete</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="total-verses">~23,000</div>
+                <div class="stat-label">Target Verses</div>
+            </div>
+        </div>
+
+        <div class="progress-card">
+            <h3>Current Import Status</h3>
+            <div id="current-status">
+                <p><strong>Status:</strong> <span id="status-text">Ready to start</span></p>
+                <p><strong>Current Book:</strong> <span id="current-book-name">None</span></p>
+                <p><strong>Current Chapter:</strong> <span id="current-chapter-name">None</span></p>
+                <p><strong>Estimated Time Remaining:</strong> <span id="time-remaining">Calculating...</span></p>
+                <p><strong>Import Speed:</strong> <span id="import-speed">0 verses/min</span></p>
+            </div>
+        </div>
+
+        <div class="control-buttons">
+            <button class="control-btn start-btn" onclick="startImport()">
+                <i class="fas fa-play"></i> Start Import
+            </button>
+            <button class="control-btn pause-btn" onclick="pauseImport()">
+                <i class="fas fa-pause"></i> Pause Import
+            </button>
+            <button class="control-btn stop-btn" onclick="stopImport()">
+                <i class="fas fa-stop"></i> Stop Import
+            </button>
+        </div>
+
+        <div class="progress-card">
+            <h3>Import Log</h3>
+            <div class="log-container" id="import-log">
+                <p>📋 Import log will appear here...</p>
+                <p>🔄 Refresh this page to see real-time updates</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let updateInterval;
+        
+        function updateProgress() {
+            fetch('/api/import/status')
+                .then(response => response.json())
+                .then(data => {
+                    // Update progress bar
+                    const percentage = Math.round((data.verses_imported / data.total_verses) * 100);
+                    document.getElementById('overall-progress').style.width = percentage + '%';
+                    document.getElementById('progress-percentage').textContent = percentage + '%';
+                    
+                    // Update stats
+                    document.getElementById('verses-imported').textContent = data.verses_imported.toLocaleString();
+                    document.getElementById('chapters-completed').textContent = data.chapters_completed;
+                    document.getElementById('books-completed').textContent = data.books_completed;
+                    
+                    // Update current status
+                    document.getElementById('status-text').textContent = data.status;
+                    document.getElementById('current-book-name').textContent = data.current_book || 'None';
+                    document.getElementById('current-chapter-name').textContent = data.current_chapter || 'None';
+                    document.getElementById('time-remaining').textContent = data.estimated_time || 'Calculating...';
+                    document.getElementById('import-speed').textContent = data.import_speed || '0 verses/min';
+                    
+                    // Update status indicator
+                    const statusElement = document.getElementById('import-status');
+                    const statusClass = data.status === 'Running' ? 'status-active' : 
+                                       data.status === 'Paused' ? 'status-paused' : 'status-stopped';
+                    statusElement.className = statusClass;
+                    statusElement.textContent = data.status === 'Running' ? '▶️ Running' :
+                                              data.status === 'Paused' ? '⏸️ Paused' : '⏹️ Stopped';
+                    
+                    // Update log
+                    if (data.recent_log) {
+                        const logContainer = document.getElementById('import-log');
+                        logContainer.innerHTML = data.recent_log.map(entry => 
+                            `<p>${entry.timestamp} - ${entry.message}</p>`
+                        ).join('');
+                        logContainer.scrollTop = logContainer.scrollHeight;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating progress:', error);
+                });
+        }
+        
+        function startImport() {
+            fetch('/api/import/start', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    updateProgress();
+                });
+        }
+        
+        function pauseImport() {
+            fetch('/api/import/pause', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    updateProgress();
+                });
+        }
+        
+        function stopImport() {
+            fetch('/api/import/stop', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    updateProgress();
+                });
+        }
+        
+        // Start updating progress when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            updateProgress();
+            updateInterval = setInterval(updateProgress, 5000); // Update every 5 seconds
+        });
+        
+        // Clean up interval when page unloads
+        window.addEventListener('beforeunload', function() {
+            if (updateInterval) {
+                clearInterval(updateInterval);
+            }
+        });
+    </script>
+</body>
+</html>

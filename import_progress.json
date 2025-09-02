@@ -1,0 +1,58 @@
+{
+  "started_at": "2025-09-01T23:12:13.517890",
+  "last_updated": "2025-09-01T23:12:21.112051",
+  "books_completed": [
+    "Genesis",
+    "Numbers",
+    "Deuteronomy",
+    "Joshua",
+    "Judges",
+    "Samuel I",
+    "Samuel II",
+    "Kings I",
+    "Kings II",
+    "Isaiah",
+    "Jeremiah",
+    "Ezekiel",
+    "Hosea",
+    "Joel",
+    "Amos",
+    "Obadiah",
+    "Jonah",
+    "Micah",
+    "Nahum",
+    "Habakkuk",
+    "Zephaniah",
+    "Haggai",
+    "Zechariah",
+    "Malachi",
+    "Psalms",
+    "Proverbs",
+    "Job",
+    "Song of Songs",
+    "Ruth",
+    "Lamentations",
+    "Ecclesiastes",
+    "Esther",
+    "Daniel",
+    "Ezra",
+    "Nehemiah",
+    "Chronicles I",
+    "Chronicles II"
+  ],
+  "books_in_progress": {
+    "Exodus": {
+      "started_at": "2025-09-01T23:12:13.518238",
+      "verses_imported": 0
+    },
+    "Leviticus": {
+      "started_at": "2025-09-01T23:12:17.439681",
+      "verses_imported": 0
+    }
+  },
+  "total_books": 39,
+  "total_verses_imported": 851,
+  "errors": [],
+  "status": "completed",
+  "completed_at": "2025-09-01T23:12:21.112020"
+}

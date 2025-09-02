@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paleo Hebrew Bible</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><i class="fas fa-scroll"></i> Paleo Hebrew Bible</h1>
+            <p class="subtitle">Ancient Script, Eternal Truth - Original Hebrew Letters with Meanings</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <div class="nav-buttons">
+                <button class="nav-btn active" onclick="showSection('books')">
+                    <i class="fas fa-book"></i> Books
+                </button>
+                <button class="nav-btn" onclick="showSection('alphabet')">
+                    <i class="fas fa-language"></i> Alphabet
+                </button>
+                <button class="nav-btn" onclick="showSection('search')">
+                    <i class="fas fa-search"></i> Search
+                </button>
+                <button class="nav-btn" onclick="showSection('converter')">
+                    <i class="fas fa-exchange-alt"></i> Converter
+                </button>
+            </div>
+            <div class="tts-controls">
+                <button id="global-tts-toggle" class="tts-control-btn" onclick="toggleGlobalTTS()">
+                    <i class="fas fa-volume-up"></i> <span id="tts-status">TTS On</span>
+                </button>
+                <select id="tts-speed" class="tts-speed-select">
+                    <option value="0.8">Slow</option>
+                    <option value="1.0" selected>Normal</option>
+                    <option value="1.2">Fast</option>
+                </select>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Books Section -->
+        <section id="books" class="section active">
+            <h2>Biblical Books</h2>
+            <div id="books-list" class="books-grid">
+                <!-- Books will be loaded here -->
+            </div>
+            
+            <div id="chapter-view" class="chapter-view hidden">
+                <button onclick="showBooks()" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Back to Books
+                </button>
+                <h3 id="current-book-title"></h3>
+                <div id="chapters-list" class="chapters-grid">
+                    <!-- Chapters will be loaded here -->
+                </div>
+            </div>
+            
+            <div id="verse-view" class="verse-view hidden">
+                <button onclick="showChapters()" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Back to Chapters
+                </button>
+                <h3 id="current-chapter-title"></h3>
+                <div id="verses-list" class="verses-container">
+                    <!-- Verses will be loaded here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Alphabet Section -->
+        <section id="alphabet" class="section">
+            <h2>Paleo Hebrew Alphabet</h2>
+            <div class="alphabet-intro">
+                <p>Each letter in the Paleo Hebrew alphabet was originally a pictograph representing physical objects and concepts. Click on any letter to explore its deeper meaning, and use the play button to hear how it was pronounced in ancient times.</p>
+            </div>
+            <div class="tts-instructions">
+                <h4>🔊 Text-to-Speech Features:</h4>
+                <ul>
+                    <li><strong>Play buttons (▶️)</strong> on verses and letters to hear ancient Hebrew pronunciation</li>
+                    <li><strong>TTS controls</strong> in the top navigation to adjust speed and toggle on/off</li>
+                    <li><strong>Spacebar</strong> to stop any currently playing audio</li>
+                    <li><strong>Reconstructed pronunciation</strong> based on historical linguistic research</li>
+                </ul>
+            </div>
+            <div id="alphabet-grid" class="alphabet-grid">
+                <!-- Alphabet will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Search Section -->
+        <section id="search" class="section">
+            <h2>Search Scripture</h2>
+            <div class="search-container">
+                <div class="search-form">
+                    <input type="text" id="search-input" placeholder="Search for verses, words, or concepts..." />
+                    <select id="search-type">
+                        <option value="all">All Text</option>
+                        <option value="hebrew">Hebrew Only</option>
+                        <option value="paleo">Paleo Hebrew Only</option>
+                        <option value="english">English Only</option>
+                    </select>
+                    <button onclick="searchVerses()" class="search-btn">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </section>
+
+        <!-- Converter Section -->
+        <section id="converter" class="section">
+            <h2>Hebrew to Paleo Hebrew Converter</h2>
+            <div class="converter-container">
+                <div class="converter-form">
+                    <label for="hebrew-input">Enter Hebrew Text:</label>
+                    <textarea id="hebrew-input" placeholder="Enter Hebrew text here..." rows="4"></textarea>
+                    <button onclick="convertText()" class="convert-btn">
+                        <i class="fas fa-exchange-alt"></i> Convert to Paleo Hebrew
+                    </button>
+                </div>
+                <div id="conversion-result" class="conversion-result hidden">
+                    <h3>Conversion Result</h3>
+                    <div class="result-item">
+                        <label>Original Hebrew:</label>
+                        <div id="original-hebrew" class="hebrew-text"></div>
+                    </div>
+                    <div class="result-item">
+                        <label>Paleo Hebrew:</label>
+                        <div id="paleo-result" class="paleo-text"></div>
+                    </div>
+                    <div class="result-item">
+                        <label>Pronunciation Guide:</label>
+                        <div id="pronunciation-result" class="pronunciation-text"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal for Letter Details -->
+    <div id="letter-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modal-letter-name"></h2>
+            <div class="letter-details">
+                <div class="letter-display">
+                    <div class="hebrew-letter" id="modal-hebrew-letter"></div>
+                    <div class="paleo-symbol" id="modal-paleo-symbol"></div>
+                </div>
+                <div class="letter-info">
+                    <div class="info-item">
+                        <strong>Meaning:</strong>
+                        <span id="modal-letter-meaning"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Pictograph:</strong>
+                        <span id="modal-pictograph"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Sound:</strong>
+                        <span id="modal-sound"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Numerical Value:</strong>
+                        <span id="modal-numerical"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Paleo Hebrew Bible - Exploring Ancient Script and Meanings</p>
+            <p>This application helps you discover the original pictographic meanings behind Hebrew letters</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
