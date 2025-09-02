@@ -1,9 +1,7 @@
-name: Deploy to Linode
+name: Deploy Paleo Bible to Server
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
     branches: [ main ]
 
 jobs:
@@ -11,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Set up Python 3.9
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: 3.9
     
@@ -25,7 +23,6 @@ jobs:
     
     - name: Test Flask app
       run: |
-        python -m pytest --version || echo "No tests found"
         python -c "from app import app; print('✅ App imports successfully')"
 
   deploy:
@@ -34,18 +31,49 @@ jobs:
     if: github.ref == 'refs/heads/main'
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
-    - name: Deploy to Linode via SSH
-      uses: appleboy/ssh-action@v0.1.7
+    - name: Deploy to Server via SSH
+      uses: appleboy/ssh-action@v1.0.0
       with:
-        host: ${{ secrets.LINODE_HOST }}
-        username: ${{ secrets.LINODE_USER }}
-        key: ${{ secrets.LINODE_SSH_KEY }}
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
         port: 22
         script: |
-          cd /var/www/paleo-bible
+          echo "🔄 Starting deployment..."
+          
+          # Navigate to project directory
+          cd ~/original-bible
+          
+          # Pull latest changes
+          echo "📥 Pulling latest changes..."
           git pull origin main
-          pip3 install -r requirements.txt
-          sudo systemctl restart paleo-bible
-          sudo systemctl restart nginx
+          
+          # Stop current containers
+          echo "🛑 Stopping containers..."
+          docker-compose down
+          
+          # Rebuild containers with latest code
+          echo "🏗️ Building containers..."
+          docker-compose build --no-cache web
+          
+          # Start containers
+          echo "🚀 Starting containers..."
+          docker-compose up -d
+          
+          # Wait for containers to start
+          sleep 10
+          
+          # Check status
+          echo "📊 Container status:"
+          docker-compose ps
+          
+          # Verify deployment
+          echo "🔍 Verifying deployment..."
+          if curl -f http://localhost >/dev/null 2>&1; then
+            echo "✅ Deployment successful!"
+          else
+            echo "❌ Deployment may have issues - check logs"
+            docker-compose logs --tail=20
+          fi
