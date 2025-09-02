@@ -351,6 +351,135 @@ def get_bible_stats():
     
     return jsonify(stats)
 
+@app.route('/api/strongs')
+def get_strongs_concordance():
+    """Get Strong's Concordance data with Hebrew/Greek words and their meanings"""
+    
+    # Sample Strong's concordance data
+    strongs_data = {
+        'hebrew': {
+            'H430': {
+                'word': 'אֱלֹהִים',
+                'transliteration': 'elohim',
+                'meaning': 'God, gods',
+                'definition': 'Supreme Being, divine being, mighty one',
+                'usage_count': 2570
+            },
+            'H3068': {
+                'word': 'יְהוָה',
+                'transliteration': 'yahweh',
+                'meaning': 'LORD, Yahweh',
+                'definition': 'The proper name of the God of Israel',
+                'usage_count': 6828
+            },
+            'H120': {
+                'word': 'אָדָם',
+                'transliteration': 'adam',
+                'meaning': 'man, mankind',
+                'definition': 'man, human being, mankind',
+                'usage_count': 562
+            },
+            'H776': {
+                'word': 'אֶרֶץ',
+                'transliteration': 'eretz',
+                'meaning': 'earth, land',
+                'definition': 'earth, land, country',
+                'usage_count': 2505
+            },
+            'H8064': {
+                'word': 'שָׁמַיִם',
+                'transliteration': 'shamayim',
+                'meaning': 'heaven, sky',
+                'definition': 'heaven, heavens, sky',
+                'usage_count': 421
+            },
+            'H216': {
+                'word': 'אוֹר',
+                'transliteration': 'or',
+                'meaning': 'light',
+                'definition': 'light, illumination, daylight',
+                'usage_count': 120
+            },
+            'H2822': {
+                'word': 'חֹשֶׁךְ',
+                'transliteration': 'choshek',
+                'meaning': 'darkness',
+                'definition': 'darkness, obscurity',
+                'usage_count': 80
+            }
+        },
+        'greek': {
+            'G2316': {
+                'word': 'θεός',
+                'transliteration': 'theos',
+                'meaning': 'God',
+                'definition': 'God, deity, divine being',
+                'usage_count': 1317
+            },
+            'G2962': {
+                'word': 'κύριος',
+                'transliteration': 'kyrios',
+                'meaning': 'Lord, master',
+                'definition': 'Lord, master, owner',
+                'usage_count': 717
+            },
+            'G2424': {
+                'word': 'Ἰησοῦς',
+                'transliteration': 'iesous',
+                'meaning': 'Jesus',
+                'definition': 'Jesus, the Christ',
+                'usage_count': 917
+            }
+        }
+    }
+    
+    # Get search parameter if provided
+    search_term = request.args.get('search', '').lower()
+    
+    if search_term:
+        # Filter results based on search term
+        filtered_data = {'hebrew': {}, 'greek': {}}
+        
+        for lang in ['hebrew', 'greek']:
+            for strong_num, data in strongs_data[lang].items():
+                if (search_term in data['meaning'].lower() or 
+                    search_term in data['transliteration'].lower() or
+                    search_term in data['definition'].lower()):
+                    filtered_data[lang][strong_num] = data
+        
+        return jsonify(filtered_data)
+    
+    return jsonify(strongs_data)
+
+@app.route('/api/strongs/<string:strong_number>')
+def get_strong_number(strong_number):
+    """Get detailed information for a specific Strong's number"""
+    
+    # This would normally query a database, but for now we'll use sample data
+    sample_data = {
+        'H430': {
+            'word': 'אֱלֹהִים',
+            'paleo_text': '𐤀𐤋𐤄𐤉𐤌',
+            'transliteration': 'elohim',
+            'pronunciation': 'el-o-HEEM',
+            'meaning': 'God, gods',
+            'definition': 'Supreme Being, divine being, mighty one. Plural form used for the one true God.',
+            'etymology': 'From H433 (el) - strength, might, especially the Almighty',
+            'usage_count': 2570,
+            'first_occurrence': 'Genesis 1:1',
+            'verses': [
+                {'reference': 'Genesis 1:1', 'text': 'In the beginning God created the heavens and the earth'},
+                {'reference': 'Exodus 20:2', 'text': 'I am the LORD your God who brought you out of Egypt'}
+            ]
+        }
+    }
+    
+    strong_number = strong_number.upper()
+    if strong_number in sample_data:
+        return jsonify(sample_data[strong_number])
+    else:
+        return jsonify({'error': 'Strong\'s number not found'}), 404
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     debug = os.environ.get('FLASK_ENV') != 'production'

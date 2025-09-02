@@ -593,3 +593,108 @@ async function speakWord(word) {
         console.error('Error in word TTS:', error);
     }
 }
+
+// Strong's Concordance Functions
+let strongsData = null;
+let currentStrongsTab = 'hebrew';
+
+async function loadStrongs() {
+    try {
+        const response = await fetch('/api/strongs');
+        strongsData = await response.json();
+        displayStrongsData(strongsData);
+    } catch (error) {
+        console.error('Error loading Strong\'s concordance:', error);
+        const resultsDiv = document.getElementById('strongs-results');
+        resultsDiv.innerHTML = '<div class="error-message">Error loading Strong\'s concordance data</div>';
+    }
+}
+
+function displayStrongsData(data) {
+    const resultsDiv = document.getElementById('strongs-results');
+    const currentData = data[currentStrongsTab] || {};
+    
+    if (Object.keys(currentData).length === 0) {
+        resultsDiv.innerHTML = '<div class="no-results">No results found</div>';
+        return;
+    }
+    
+    let html = '<div class="strongs-entries">';
+    
+    Object.entries(currentData).forEach(([strongNumber, entry]) => {
+        html += `
+            <div class="strongs-entry">
+                <div class="strongs-header">
+                    <span class="strong-number">${strongNumber}</span>
+                    <span class="hebrew-word">${entry.word}</span>
+                    <span class="transliteration">${entry.transliteration}</span>
+                </div>
+                <div class="strongs-content">
+                    <div class="meaning">${entry.meaning}</div>
+                    <div class="definition">${entry.definition}</div>
+                    <div class="usage-count">Used ${entry.usage_count} times</div>
+                </div>
+            </div>
+        `;
+    });
+    
+    html += '</div>';
+    resultsDiv.innerHTML = html;
+}
+
+function showStrongsTab(tab) {
+    currentStrongsTab = tab;
+    
+    // Update tab buttons
+    document.querySelectorAll('.strongs-tabs .tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    // Display data for selected tab
+    if (strongsData) {
+        displayStrongsData(strongsData);
+    }
+}
+
+async function searchStrongs() {
+    const searchTerm = document.getElementById('strongs-search').value.trim();
+    
+    if (searchTerm === '') {
+        loadStrongs();
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/api/strongs?search=${encodeURIComponent(searchTerm)}`);
+        const data = await response.json();
+        displayStrongsData(data);
+    } catch (error) {
+        console.error('Error searching Strong\'s concordance:', error);
+        const resultsDiv = document.getElementById('strongs-results');
+        resultsDiv.innerHTML = '<div class="error-message">Error searching Strong\'s concordance</div>';
+    }
+}
+
+// Update showSection function to handle strongs
+const originalShowSection = showSection;
+function showSection(sectionId) {
+    originalShowSection(sectionId);
+    
+    // Load Strong's data when section is shown
+    if (sectionId === 'strongs' && !strongsData) {
+        loadStrongs();
+    }
+}
+
+// Add enter key support for Strong's search
+document.addEventListener('DOMContentLoaded', function() {
+    const strongsSearch = document.getElementById('strongs-search');
+    if (strongsSearch) {
+        strongsSearch.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchStrongs();
+            }
+        });
+    }
+});

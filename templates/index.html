@@ -30,6 +30,9 @@
                 <button class="nav-btn" onclick="showSection('converter')">
                     <i class="fas fa-exchange-alt"></i> Converter
                 </button>
+                <button class="nav-btn" onclick="showSection('strongs')">
+                    <i class="fas fa-book-open"></i> Strong's
+                </button>
             </div>
             <div class="tts-controls">
                 <button id="global-tts-toggle" class="tts-control-btn" onclick="toggleGlobalTTS()">
@@ -140,6 +143,28 @@
                         <label>Pronunciation Guide:</label>
                         <div id="pronunciation-result" class="pronunciation-text"></div>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Strong's Concordance Section -->
+        <section id="strongs" class="section">
+            <h2>Strong's Concordance</h2>
+            <div class="strongs-container">
+                <div class="strongs-search">
+                    <input type="text" id="strongs-search" placeholder="Search Strong's numbers or word meanings..." />
+                    <button onclick="searchStrongs()" class="search-btn">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+                
+                <div class="strongs-tabs">
+                    <button class="tab-btn active" onclick="showStrongsTab('hebrew')">Hebrew</button>
+                    <button class="tab-btn" onclick="showStrongsTab('greek')">Greek</button>
+                </div>
+                
+                <div id="strongs-results" class="strongs-results">
+                    <div class="loading-message">Loading Strong's Concordance...</div>
                 </div>
             </div>
         </section>

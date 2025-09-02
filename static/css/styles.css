@@ -811,3 +811,166 @@ footer p {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+/* Strong's Concordance Styles */
+.strongs-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.strongs-search {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    align-items: center;
+}
+
+.strongs-search input {
+    flex: 1;
+    padding: 0.75rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.strongs-search input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.strongs-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    justify-content: center;
+}
+
+.tab-btn {
+    padding: 0.75rem 1.5rem;
+    border: 2px solid #667eea;
+    background: white;
+    color: #667eea;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.tab-btn.active,
+.tab-btn:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.strongs-entries {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.strongs-entry {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid #f0f0f0;
+    transition: all 0.3s ease;
+}
+
+.strongs-entry:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.strongs-header {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.strong-number {
+    background: #667eea;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.hebrew-word {
+    font-family: 'Times New Roman', serif;
+    font-size: 1.5rem;
+    color: #2c3e50;
+    font-weight: bold;
+}
+
+.transliteration {
+    color: #7f8c8d;
+    font-style: italic;
+    font-size: 1.1rem;
+}
+
+.strongs-content {
+    line-height: 1.6;
+}
+
+.meaning {
+    font-weight: bold;
+    color: #27ae60;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.definition {
+    color: #34495e;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.usage-count {
+    color: #95a5a6;
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+.loading-message,
+.error-message,
+.no-results {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #7f8c8d;
+    font-size: 1.1rem;
+}
+
+.error-message {
+    color: #e74c3c;
+    background: #fdf2f2;
+    border-radius: 8px;
+    border: 1px solid #fecaca;
+}
+
+/* Responsive design for Strong's */
+@media (max-width: 768px) {
+    .strongs-search {
+        flex-direction: column;
+    }
+    
+    .strongs-tabs {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .strongs-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .hebrew-word {
+        font-size: 1.3rem;
+    }
+}
