@@ -567,6 +567,53 @@ main {
     background: #5a6268;
 }
 
+.chapter-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 3rem;
+    padding: 2rem 0;
+    border-top: 2px solid #e9ecef;
+    gap: 1rem;
+}
+
+.nav-chapter-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 50px;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.nav-chapter-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.nav-chapter-btn:active {
+    transform: translateY(0);
+}
+
+.nav-chapter-btn:disabled {
+    background: #95a5a6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.nav-chapter-btn i {
+    font-size: 1.1rem;
+}
+
 /* Footer */
 footer {
     background: #343a40;
@@ -887,7 +934,7 @@ footer p {
 .strongs-header {
     display: flex;
     gap: 1rem;
-    align-items: center;
+    align-items: flex-start;
     margin-bottom: 1rem;
     flex-wrap: wrap;
 }
@@ -899,6 +946,15 @@ footer p {
     border-radius: 20px;
     font-weight: bold;
     font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.word-display {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 .hebrew-word {
@@ -906,12 +962,36 @@ footer p {
     font-size: 1.5rem;
     color: #2c3e50;
     font-weight: bold;
+    direction: rtl;
+    text-align: right;
+}
+
+.paleo-word {
+    font-family: 'Times New Roman', serif;
+    font-size: 1.4rem;
+    color: #8b4513;
+    font-weight: bold;
+    direction: rtl;
+    text-align: right;
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .transliteration {
     color: #7f8c8d;
     font-style: italic;
     font-size: 1.1rem;
+    direction: ltr;
+    text-align: left;
+}
+
+.separator {
+    color: #bdc3c7;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 0 0.2rem;
 }
 
 .strongs-content {
@@ -929,6 +1009,54 @@ footer p {
     color: #34495e;
     margin-bottom: 1rem;
     line-height: 1.5;
+}
+
+.root-meaning-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-left: 4px solid #667eea;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.root-meaning-label {
+    font-weight: bold;
+    color: #495057;
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+}
+
+.root-meaning-label::before {
+    content: "🌱";
+    margin-right: 0.5rem;
+}
+
+.root-meaning-content {
+    line-height: 1.5;
+}
+
+.pictographic-analysis {
+    color: #6f42c1;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    font-style: italic;
+}
+
+.formation-explanation {
+    color: #198754;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.original-concept {
+    color: #fd7e14;
+    font-size: 0.95rem;
+    padding: 0.5rem;
+    background: rgba(253, 126, 20, 0.1);
+    border-radius: 4px;
+    border-left: 3px solid #fd7e14;
 }
 
 .usage-count {
@@ -953,6 +1081,684 @@ footer p {
     border: 1px solid #fecaca;
 }
 
+/* Dictionary Styles */
+.dictionary-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.dictionary-intro {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+}
+
+.dictionary-intro p {
+    margin: 0;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.dictionary-search {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.dictionary-search input {
+    flex: 1;
+    min-width: 250px;
+    padding: 0.8rem 1rem;
+    border: 2px solid #e0e6ed;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.dictionary-search input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.dictionary-analyzer {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid #e9ecef;
+}
+
+.dictionary-analyzer h4 {
+    color: #495057;
+    margin-bottom: 1rem;
+}
+
+.analyzer-input {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.analyzer-input input {
+    flex: 1;
+    min-width: 200px;
+    padding: 0.8rem 1rem;
+    border: 2px solid #e0e6ed;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.analyze-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: transform 0.2s ease;
+}
+
+.analyze-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.dictionary-entries {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.dictionary-entry {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dictionary-entry:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    border-color: #667eea;
+}
+
+.entry-header {
+    margin-bottom: 1rem;
+}
+
+.english-meaning {
+    font-weight: 600;
+    color: #27ae60;
+    font-size: 1.1rem;
+    margin-top: 0.5rem;
+}
+
+.pictographic-preview {
+    color: #6c757d;
+    font-style: italic;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+}
+
+.strong-ref {
+    font-size: 0.9rem;
+    color: #007bff;
+    font-weight: 500;
+}
+
+.analysis-result {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-top: 1.5rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+.word-analysis {
+    line-height: 1.6;
+}
+
+.analysis-header {
+    border-bottom: 2px solid #f8f9fa;
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.root-analysis {
+    margin-bottom: 2rem;
+}
+
+.root-analysis h4 {
+    color: #495057;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.letter-breakdown {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.letter-item {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1.5rem;
+    align-items: center;
+    border-left: 4px solid #667eea;
+}
+
+.letter-paleo-primary {
+    font-size: 2rem;
+    color: #e67e22;
+    font-family: 'Noto Sans Old South Arabian', serif;
+    text-align: center;
+    min-width: 50px;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.letter-hebrew {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #2c3e50;
+    text-align: center;
+    min-width: 30px;
+}
+
+.letter-paleo {
+    font-size: 1.4rem;
+    color: #e67e22;
+    font-family: 'Noto Sans Old South Arabian', serif;
+    text-align: center;
+    min-width: 30px;
+}
+
+.letter-meaning {
+    color: #495057;
+    font-weight: 500;
+}
+
+.pictographic-section,
+.original-concept,
+.formation-explanation {
+    margin-bottom: 2rem;
+}
+
+.pictographic-section h4,
+.original-concept h4,
+.formation-explanation h4 {
+    color: #495057;
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+}
+
+.pictographic-section p,
+.original-concept p,
+.formation-explanation p {
+    color: #6c757d;
+    line-height: 1.6;
+}
+
+.usage-examples {
+    margin-bottom: 1.5rem;
+}
+
+.usage-examples h4 {
+    color: #495057;
+    margin-bottom: 1rem;
+}
+
+.example-item {
+    background: #f8f9fa;
+    border-left: 4px solid #28a745;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    border-radius: 0 8px 8px 0;
+}
+
+.example-item strong {
+    color: #007bff;
+}
+
+.first-occurrence,
+.frequency {
+    background: #e9ecef;
+    border-radius: 6px;
+    padding: 0.75rem;
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    color: #495057;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Word Overlay Styles */
+.word-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(3px);
+}
+
+.word-overlay-content {
+    background: white;
+    border-radius: 16px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    position: relative;
+    animation: wordOverlaySlideIn 0.3s ease-out;
+    padding-top: 1rem;
+}
+
+@keyframes wordOverlaySlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.word-overlay-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: #f8f9fa;
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 1001;
+}
+
+.word-overlay-close:hover {
+    background: #e9ecef;
+    color: #495057;
+    transform: scale(1.1);
+}
+
+.word-overlay-header {
+    background: white;
+    color: #1f2937;
+    padding: 2rem;
+    border-radius: 16px 16px 0 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.word-overlay-header .word-display {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.word-overlay-header .hebrew-word {
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+.word-overlay-header .paleo-word {
+    font-size: 1.8rem;
+    font-family: 'Noto Sans Old South Arabian', serif;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+.word-overlay-header .transliteration {
+    font-size: 1.1rem;
+    font-style: italic;
+}
+
+.word-overlay-header .english-meaning {
+    font-size: 1.2rem;
+    font-weight: 500;
+    text-align: center;
+    opacity: 0.95;
+}
+
+.word-overlay-header .arrow {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1rem;
+}
+
+.word-overlay-body {
+    padding: 2rem;
+    background: white;
+}
+
+/* Word display sequence in white area */
+.word-display-sequence {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #f9fafb;
+    border-radius: 12px;
+    border: 2px solid #e5e7eb;
+    flex-wrap: wrap;
+}
+
+.word-display-sequence .hebrew-word {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #1f2937;
+}
+
+.word-display-sequence .paleo-word {
+    font-size: 1.8rem;
+    font-family: 'Noto Sans Old South Arabian', serif;
+    color: #f59e0b;
+    text-shadow: none;
+}
+
+.word-display-sequence .transliteration {
+    font-size: 1.1rem;
+    font-style: italic;
+    color: #6b7280;
+}
+
+.word-display-sequence .english-word {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #10b981;
+}
+
+.word-display-sequence .arrow {
+    color: #9ca3af;
+    font-size: 1rem;
+}
+
+/* New overlay styles matching the design */
+.strong-number-badge {
+    background: #6366f1;
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: inline-block;
+}
+
+.word-overlay-header .english-meaning {
+    font-size: 1.4rem;
+    color: #10b981;
+    font-weight: 600;
+    margin: 1rem 0 0.5rem 0;
+}
+
+.word-overlay-header .definition {
+    font-size: 1rem;
+    color: #4b5563;
+    margin-bottom: 1rem;
+}
+
+.root-meaning-section {
+    background: rgba(243, 244, 246, 0.5);
+    border-left: 4px solid #10b981;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.pictographic-breakdown {
+    font-size: 1.1rem;
+    color: #8b5cf6;
+    margin: 0.5rem 0;
+    font-weight: 500;
+}
+
+.formation-explanation {
+    font-size: 1rem;
+    color: #10b981;
+    margin: 0.5rem 0;
+    font-weight: 500;
+}
+
+.formation-summary {
+    background: #f97316;
+    color: white;
+    padding: 0.5rem;
+    border-left: 4px solid #ea580c;
+    margin: 0.5rem 0;
+    border-radius: 4px;
+}
+
+.formation-summary-text {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.usage-info {
+    text-align: center;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.usage-count {
+    font-size: 0.9rem;
+    color: #9ca3af;
+    font-style: italic;
+}
+
+.root-analysis-section {
+    margin-bottom: 2rem;
+}
+
+.root-analysis-section h4 {
+    color: #495057;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.root-analysis-section .pictographic-analysis {
+    background: #f8f9fa;
+    border-left: 4px solid #667eea;
+    padding: 1rem;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 0.75rem;
+    color: #6f42c1;
+    font-weight: 500;
+    font-style: italic;
+}
+
+.root-analysis-section .formation-explanation {
+    color: #198754;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+    line-height: 1.5;
+}
+
+.root-analysis-section .original-concept {
+    background: rgba(253, 126, 20, 0.1);
+    border-left: 3px solid #fd7e14;
+    padding: 1rem;
+    border-radius: 0 8px 8px 0;
+    color: #fd7e14;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.letter-breakdown-section h4 {
+    color: #495057;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.letters-container {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.overlay-letter-item {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 0.75rem;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+    align-items: center;
+    border-left: 3px solid #667eea;
+}
+
+.overlay-letter-paleo {
+    font-size: 1.5rem;
+    color: #e67e22;
+    font-family: 'Noto Sans Old South Arabian', serif;
+    font-weight: bold;
+    text-align: center;
+    min-width: 35px;
+}
+
+.overlay-letter-meaning {
+    color: #495057;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+/* Interactive Hebrew words */
+.paleo-word-interactive {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 3px;
+    padding: 0.1rem 0.2rem;
+    margin: 0 1px;
+}
+
+.paleo-word-interactive:hover {
+    background-color: rgba(128, 128, 128, 0.3) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Keep the old styles for backwards compatibility */
+.hebrew-word-interactive {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 3px;
+    padding: 0.1rem 0.2rem;
+}
+
+.hebrew-word-interactive:hover {
+    background: rgba(102, 126, 234, 0.1);
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .word-overlay-content {
+        width: 95%;
+        max-height: 85vh;
+        border-radius: 12px;
+    }
+    
+    .word-display-sequence {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .word-overlay-body {
+        padding: 1.5rem;
+    }
+    
+    .overlay-letter-item {
+        grid-template-columns: auto 1fr;
+        gap: 0.75rem;
+    }
+}
+
+/* Responsive design for Dictionary */
+@media (max-width: 768px) {
+    .dictionary-search {
+        flex-direction: column;
+    }
+    
+    .dictionary-search input {
+        min-width: 100%;
+    }
+    
+    .analyzer-input {
+        flex-direction: column;
+    }
+    
+    .analyzer-input input {
+        min-width: 100%;
+    }
+    
+    .letter-item {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 0.5rem;
+    }
+    
+    .letter-paleo-primary {
+        font-size: 1.8rem;
+        min-width: 40px;
+    }
+    
+    .analysis-result {
+        padding: 1.5rem;
+    }
+}
+
+/* Chapter navigation responsive */
+@media (max-width: 768px) {
+    .chapter-navigation {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1.5rem 0;
+    }
+    
+    .nav-chapter-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 1rem;
+        font-size: 0.95rem;
+    }
+}
+
 /* Responsive design for Strong's */
 @media (max-width: 768px) {
     .strongs-search {
@@ -972,5 +1778,77 @@ footer p {
     
     .hebrew-word {
         font-size: 1.3rem;
+    }
+}
+
+/* Authentication Styles */
+.auth-controls {
+    text-align: right;
+    margin-bottom: 1rem;
+}
+
+.logout-btn {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s;
+}
+
+.logout-btn:hover {
+    background: #dc2626;
+}
+
+.login-prompt {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.login-prompt p {
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+    color: #666;
+}
+
+.login-btn {
+    background: #6366f1;
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: background-color 0.3s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.login-btn:hover {
+    background: #5856eb;
+}
+
+/* Admin Authentication Responsive */
+@media (max-width: 768px) {
+    .auth-controls {
+        text-align: center;
+    }
+    
+    .login-prompt {
+        padding: 2rem 1rem;
+        margin: 0 1rem;
+    }
+    
+    .login-btn {
+        width: 100%;
+        text-align: center;
     }
 }

@@ -3,6 +3,7 @@ Hebrew to Paleo Hebrew converter utility
 """
 
 # Mapping from modern Hebrew letters to Paleo Hebrew symbols
+# Only the 22 Hebrew letters (plus final forms) - no punctuation in ancient scripts
 HEBREW_TO_PALEO = {
     'א': '𐤀',  # Aleph
     'ב': '𐤁',  # Bet
@@ -31,13 +32,7 @@ HEBREW_TO_PALEO = {
     'ר': '𐤓',  # Resh
     'ש': '𐤔',  # Shin
     'ת': '𐤕',  # Tav
-    ' ': ' ',   # Space
-    '.': '.',   # Period
-    ',': ',',   # Comma
-    ':': ':',   # Colon
-    ';': ';',   # Semicolon
-    '!': '!',   # Exclamation
-    '?': '?',   # Question mark
+    ' ': ' ',   # Space (preserve word separation)
 }
 
 # Reverse mapping for Paleo to Hebrew
@@ -45,21 +40,25 @@ PALEO_TO_HEBREW = {v: k for k, v in HEBREW_TO_PALEO.items() if k not in ['ך', '
 
 def hebrew_to_paleo(hebrew_text):
     """
-    Convert Hebrew text to Paleo Hebrew script
+    Convert Hebrew text to Paleo Hebrew script using only the 22 Hebrew letters
     
     Args:
         hebrew_text (str): Hebrew text with or without nikud
     
     Returns:
-        str: Text converted to Paleo Hebrew script
+        str: Text converted to Paleo Hebrew script (only the 22 letters + spaces)
     """
     # Remove nikud (vowel points) - they didn't exist in ancient times
     hebrew_no_nikud = remove_nikud(hebrew_text)
     
-    # Convert each character
+    # Convert each character, only keeping Hebrew letters and spaces
     paleo_text = ''
     for char in hebrew_no_nikud:
-        paleo_text += HEBREW_TO_PALEO.get(char, char)
+        if char in HEBREW_TO_PALEO:
+            paleo_text += HEBREW_TO_PALEO[char]
+        elif char.isspace():
+            paleo_text += ' '
+        # Skip all other characters (punctuation, numbers, etc.)
     
     return paleo_text
 
@@ -81,15 +80,16 @@ def paleo_to_hebrew(paleo_text):
 
 def remove_nikud(hebrew_text):
     """
-    Remove nikud (vowel points) from Hebrew text
+    Remove nikud (vowel points) and Hebrew punctuation marks from Hebrew text
+    Removes all non-consonantal marks that didn't exist in ancient Paleo Hebrew
     
     Args:
-        hebrew_text (str): Hebrew text with nikud
+        hebrew_text (str): Hebrew text with nikud and punctuation
     
     Returns:
-        str: Hebrew text without nikud
+        str: Hebrew text with only consonantal letters
     """
-    # Unicode ranges for Hebrew nikud/vowel points
+    # Unicode ranges for Hebrew nikud/vowel points and punctuation to remove
     nikud_ranges = [
         (0x0591, 0x05BD),  # Hebrew accents
         (0x05BF, 0x05BF),  # Hebrew point rafe
@@ -98,9 +98,23 @@ def remove_nikud(hebrew_text):
         (0x05C7, 0x05C7),  # Hebrew point qamats qatan
     ]
     
+    # Specific Hebrew punctuation marks that didn't exist in ancient times
+    ancient_punctuation = [
+        0x05BE,  # Hebrew punctuation maqaf (־)
+        0x05C3,  # Hebrew punctuation sof pasuq (׃)
+        0x05C0,  # Hebrew punctuation paseq
+        0x05C6,  # Hebrew punctuation nun hafukha
+    ]
+    
     result = ''
     for char in hebrew_text:
         char_code = ord(char)
+        
+        # Skip ancient punctuation marks that didn't exist in Paleo Hebrew
+        if char_code in ancient_punctuation:
+            continue
+            
+        # Skip nikud (vowel points and cantillation marks)
         is_nikud = any(start <= char_code <= end for start, end in nikud_ranges)
         if not is_nikud:
             result += char

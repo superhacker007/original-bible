@@ -27,11 +27,14 @@
                 <button class="nav-btn" onclick="showSection('search')">
                     <i class="fas fa-search"></i> Search
                 </button>
-                <button class="nav-btn" onclick="showSection('converter')">
-                    <i class="fas fa-exchange-alt"></i> Converter
+                <button class="nav-btn" onclick="showSection('facts')">
+                    <i class="fas fa-lightbulb"></i> God Facts
                 </button>
                 <button class="nav-btn" onclick="showSection('strongs')">
                     <i class="fas fa-book-open"></i> Strong's
+                </button>
+                <button class="nav-btn" onclick="showSection('dictionary')">
+                    <i class="fas fa-scroll"></i> Dictionary
                 </button>
             </div>
             <div class="tts-controls">
@@ -72,6 +75,14 @@
                 <h3 id="current-chapter-title"></h3>
                 <div id="verses-list" class="verses-container">
                     <!-- Verses will be loaded here -->
+                </div>
+                <div class="chapter-navigation">
+                    <button id="prev-chapter-btn" onclick="navigateToPrevChapter()" class="nav-chapter-btn">
+                        <i class="fas fa-chevron-left"></i> Previous Chapter
+                    </button>
+                    <button id="next-chapter-btn" onclick="navigateToNextChapter()" class="nav-chapter-btn">
+                        Next Chapter <i class="fas fa-chevron-right"></i>
+                    </button>
                 </div>
             </div>
         </section>
@@ -118,31 +129,31 @@
             </div>
         </section>
 
-        <!-- Converter Section -->
-        <section id="converter" class="section">
-            <h2>Hebrew to Paleo Hebrew Converter</h2>
-            <div class="converter-container">
-                <div class="converter-form">
-                    <label for="hebrew-input">Enter Hebrew Text:</label>
-                    <textarea id="hebrew-input" placeholder="Enter Hebrew text here..." rows="4"></textarea>
-                    <button onclick="convertText()" class="convert-btn">
-                        <i class="fas fa-exchange-alt"></i> Convert to Paleo Hebrew
-                    </button>
+        <!-- Amazing Facts Section -->
+        <section id="facts" class="section">
+            <h2>Amazing Facts That Prove God is Real</h2>
+            <div class="facts-intro">
+                <p>Discover incredible scientific discoveries, historical evidence, and miraculous testimonies that demonstrate the existence and power of God. Each fact is carefully researched and documented.</p>
+            </div>
+            
+            <div class="facts-container">
+                <div class="facts-filters">
+                    <button class="filter-btn active" onclick="filterFacts('all')">All Facts</button>
+                    <button class="filter-btn" onclick="filterFacts('science')">Science</button>
+                    <button class="filter-btn" onclick="filterFacts('history')">History</button>
+                    <button class="filter-btn" onclick="filterFacts('prophecy')">Prophecy</button>
+                    <button class="filter-btn" onclick="filterFacts('miracles')">Miracles</button>
+                    <button class="filter-btn" onclick="filterFacts('creation')">Creation</button>
                 </div>
-                <div id="conversion-result" class="conversion-result hidden">
-                    <h3>Conversion Result</h3>
-                    <div class="result-item">
-                        <label>Original Hebrew:</label>
-                        <div id="original-hebrew" class="hebrew-text"></div>
-                    </div>
-                    <div class="result-item">
-                        <label>Paleo Hebrew:</label>
-                        <div id="paleo-result" class="paleo-text"></div>
-                    </div>
-                    <div class="result-item">
-                        <label>Pronunciation Guide:</label>
-                        <div id="pronunciation-result" class="pronunciation-text"></div>
-                    </div>
+                
+                <div id="facts-grid" class="facts-grid">
+                    <!-- Facts will be loaded here -->
+                </div>
+                
+                <div class="load-more-container">
+                    <button id="load-more-facts" class="load-more-btn" onclick="loadMoreFacts()">
+                        <i class="fas fa-plus"></i> Load More Facts
+                    </button>
                 </div>
             </div>
         </section>
@@ -168,7 +179,180 @@
                 </div>
             </div>
         </section>
+
+        <!-- Paleo Dictionary Section -->
+        <section id="dictionary" class="section">
+            <h2>Paleo Hebrew Dictionary</h2>
+            <div class="dictionary-intro">
+                <p>Explore how Hebrew words are formed from their original pictographic roots. Each entry shows the ancient pictographic meaning behind modern Hebrew words, revealing the deep symbolic connections in the language.</p>
+            </div>
+            
+            <div class="dictionary-container">
+                <div class="dictionary-search">
+                    <input type="text" id="dictionary-search" placeholder="Search Hebrew words, meanings, or pictographic concepts..." />
+                    <button onclick="searchDictionary()" class="search-btn">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+                
+                <div class="dictionary-analyzer">
+                    <h4>Word Analyzer</h4>
+                    <p>Enter any Hebrew word to see its pictographic breakdown:</p>
+                    <div class="analyzer-input">
+                        <input type="text" id="analyzer-input" placeholder="Enter Hebrew word (e.g., שלום)" />
+                        <button onclick="analyzeWord()" class="analyze-btn">
+                            <i class="fas fa-microscope"></i> Analyze
+                        </button>
+                    </div>
+                    <div id="word-analysis-result" class="analysis-result hidden">
+                        <!-- Analysis results will appear here -->
+                    </div>
+                </div>
+                
+                <div id="dictionary-results" class="dictionary-results">
+                    <div class="loading-message">Loading Paleo Dictionary...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Dashboard Section -->
+        <section id="admin" class="section">
+            <h2>Admin Dashboard - God Facts Management</h2>
+            
+            <div class="admin-container">
+                <div class="admin-stats">
+                    <div class="stat-card">
+                        <i class="fas fa-lightbulb"></i>
+                        <div class="stat-info">
+                            <h3 id="total-facts">0</h3>
+                            <p>Total Facts</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-eye"></i>
+                        <div class="stat-info">
+                            <h3 id="published-facts">0</h3>
+                            <p>Published</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-clock"></i>
+                        <div class="stat-info">
+                            <h3 id="draft-facts">0</h3>
+                            <p>Drafts</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-actions">
+                    <button class="admin-btn-primary" onclick="showAddFactForm()">
+                        <i class="fas fa-plus"></i> Add New Fact
+                    </button>
+                    <button class="admin-btn-secondary" onclick="refreshFactsList()">
+                        <i class="fas fa-sync"></i> Refresh List
+                    </button>
+                </div>
+
+                <div id="add-fact-form" class="add-fact-form hidden">
+                    <h3>Add New Amazing Fact</h3>
+                    <form id="fact-form" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="fact-title">Title*</label>
+                            <input type="text" id="fact-title" name="title" required placeholder="Enter fact title...">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fact-category">Category*</label>
+                            <select id="fact-category" name="category" required>
+                                <option value="">Select Category</option>
+                                <option value="science">Science</option>
+                                <option value="history">History</option>
+                                <option value="prophecy">Prophecy</option>
+                                <option value="miracles">Miracles</option>
+                                <option value="creation">Creation</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fact-content">Content*</label>
+                            <textarea id="fact-content" name="content" required rows="8" placeholder="Write the amazing fact content here..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fact-source">Source/Reference</label>
+                            <input type="text" id="fact-source" name="source" placeholder="Scientific journal, book, website, etc.">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fact-image">Image (Optional)</label>
+                            <input type="file" id="fact-image" name="image" accept="image/*">
+                            <div class="file-preview" id="image-preview"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fact-video">Video (Optional)</label>
+                            <input type="file" id="fact-video" name="video" accept="video/*">
+                            <div class="file-preview" id="video-preview"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fact-status">Status</label>
+                            <select id="fact-status" name="status">
+                                <option value="draft">Draft</option>
+                                <option value="published">Published</option>
+                            </select>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="submit-btn">
+                                <i class="fas fa-save"></i> Save Fact
+                            </button>
+                            <button type="button" class="cancel-btn" onclick="hideAddFactForm()">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="admin-facts-list">
+                    <h3>Manage Facts</h3>
+                    <div id="admin-facts-table">
+                        <!-- Facts management table will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
+
+    <!-- Word Analysis Overlay -->
+    <div id="word-overlay" class="word-overlay hidden">
+        <div class="word-overlay-content">
+            <button class="word-overlay-close" onclick="hideWordOverlay()">&times;</button>
+            <div class="word-overlay-body">
+                <div class="word-display-sequence">
+                    <span id="overlay-hebrew-word" class="hebrew-word"></span>
+                    <span class="arrow">→</span>
+                    <span id="overlay-paleo-word" class="paleo-word"></span>
+                    <span class="arrow">→</span>
+                    <span id="overlay-transliteration" class="transliteration"></span>
+                    <span class="arrow">→</span>
+                    <span id="overlay-english-word" class="english-word"></span>
+                </div>
+                
+                <div class="root-meaning-section">
+                    <h4>🌱 Root Meaning:</h4>
+                    <div id="overlay-pictographic-breakdown" class="pictographic-breakdown"></div>
+                    <div id="overlay-formation-explanation" class="formation-explanation"></div>
+                    <div class="formation-summary">
+                        <div id="overlay-formation-summary" class="formation-summary-text"></div>
+                    </div>
+                </div>
+                <div class="usage-info">
+                    <span id="overlay-usage-count" class="usage-count">Used 1205 times</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Modal for Letter Details -->
     <div id="letter-modal" class="modal">
@@ -209,6 +393,7 @@
         </div>
     </footer>
 
+    <script src="{{ url_for('static', filename='js/complete_paleo_english.js') }}"></script>
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 </html>
