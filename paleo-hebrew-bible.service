@@ -1,0 +1,16 @@
+[Unit]
+Description=Paleo Hebrew Bible Flask Application
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/var/www/paleo-hebrew-bible
+Environment=PATH=/var/www/paleo-hebrew-bible/venv/bin
+Environment=FLASK_ENV=production
+ExecStart=/var/www/paleo-hebrew-bible/venv/bin/python run_app.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

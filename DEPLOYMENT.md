@@ -1,261 +1,213 @@
 # Paleo Hebrew Bible - Deployment Guide
 
-This guide will help you deploy the Paleo Hebrew Bible application to Linode with a custom domain and CI/CD pipeline.
+## 🚀 Quick Deployment
 
-## 🚀 Overview
+### Automatic Deployment (Recommended)
 
-- **Application**: Flask-based Paleo Hebrew Bible with TTS
-- **Database**: 66 books (39 Hebrew Bible + 27 New Testament)
-- **Features**: Hebrew/Greek texts, Paleo Hebrew script, Strong's Concordance, TTS
-- **Deployment**: Docker + Nginx + SSL on Linode
-- **CI/CD**: GitHub Actions
+1. **Clone the repository on your server:**
+   ```bash
+   git clone https://github.com/superhacker007/original-bible.git
+   cd original-bible
+   ```
 
-## 📋 Prerequisites
+2. **Run the deployment script:**
+   ```bash
+   ./deploy.sh
+   ```
 
-1. **Linode Account** with a VPS (Nanode 1GB minimum recommended)
-2. **Domain Name** pointed to your Linode server
-3. **GitHub Account** for repository hosting
-4. **SSL Certificate** (Let's Encrypt recommended)
+This will automatically set up everything including:
+- Python virtual environment
+- Dependencies installation
+- Database initialization  
+- Systemd service
+- Nginx reverse proxy
+- SSL/TLS (optional)
+- Firewall configuration
 
-## 🏗️ Step 1: Linode Server Setup
+## 🔧 Manual Deployment
 
-### 1.1 Create Linode Instance
+### Prerequisites
+- Ubuntu/Debian server
+- Python 3.9+
+- Git
+- Sudo privileges
+
+### Step-by-Step Setup
+
+1. **Install system dependencies:**
+   ```bash
+   sudo apt update && sudo apt upgrade -y
+   sudo apt install -y python3 python3-pip python3-venv git nginx
+   ```
+
+2. **Clone repository:**
+   ```bash
+   sudo mkdir -p /var/www/paleo-hebrew-bible
+   sudo chown $USER:$USER /var/www/paleo-hebrew-bible
+   git clone https://github.com/superhacker007/original-bible.git /var/www/paleo-hebrew-bible
+   cd /var/www/paleo-hebrew-bible
+   ```
+
+3. **Set up Python environment:**
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   pip install -r requirements.txt
+   ```
+
+4. **Initialize database:**
+   ```bash
+   python -c "from app import app; from models import db; app.app_context().push(); db.create_all()"
+   ```
+
+5. **Set up systemd service:**
+   ```bash
+   sudo cp paleo-hebrew-bible.service /etc/systemd/system/
+   sudo systemctl daemon-reload
+   sudo systemctl enable paleo-hebrew-bible
+   sudo systemctl start paleo-hebrew-bible
+   ```
+
+6. **Configure Nginx:**
+   ```bash
+   sudo cp nginx.conf /etc/nginx/sites-available/paleo-hebrew-bible
+   sudo ln -s /etc/nginx/sites-available/paleo-hebrew-bible /etc/nginx/sites-enabled/
+   sudo rm /etc/nginx/sites-enabled/default
+   sudo systemctl restart nginx
+   ```
+
+## 🔒 CI/CD with GitHub Actions
+
+### Required Secrets
+
+Set up these secrets in your GitHub repository settings:
+
+- `HOST` - Your server IP address
+- `USERNAME` - SSH username  
+- `SSH_PRIVATE_KEY` - Your private SSH key
+- `PORT` - SSH port (usually 22)
+- `PROJECT_PATH` - Path to project on server (/var/www/paleo-hebrew-bible)
+
+### SSH Key Setup
+
+1. **Generate SSH key pair on your local machine:**
+   ```bash
+   ssh-keygen -t ed25519 -C "github-actions-deploy"
+   ```
+
+2. **Copy public key to server:**
+   ```bash
+   ssh-copy-id -i ~/.ssh/id_ed25519.pub user@your-server-ip
+   ```
+
+3. **Add private key to GitHub secrets:**
+   - Copy the content of `~/.ssh/id_ed25519` 
+   - Add it as `SSH_PRIVATE_KEY` in GitHub repository secrets
+
+### Workflow Features
+
+- **Automated testing** on every push/PR
+- **Deployment** only on main branch pushes
+- **Health checks** after deployment
+- **Service restart** via systemd
+- **Dependency updates** automatically
+
+## 🔑 Admin Access
+
+Once deployed, you can access the admin panel at:
+
+- **URL:** `http://your-server-ip/login`
+- **Username:** `admin`  
+- **Password:** `paleo_admin_2025`
+
+## 📊 Monitoring
+
+### Check Application Status
 ```bash
-# Create a Nanode 1GB instance with Ubuntu 20.04 LTS
-# Note the IP address for DNS configuration
+sudo systemctl status paleo-hebrew-bible
 ```
 
-### 1.2 Initial Server Configuration
+### View Application Logs
 ```bash
-# SSH into your server
-ssh root@YOUR_SERVER_IP
-
-# Update system
-apt update && apt upgrade -y
-
-# Install Docker and Docker Compose
-curl -fsSL https://get.docker.com -o get-docker.sh
-sh get-docker.sh
-apt install docker-compose -y
-
-# Create application user
-adduser deployer
-usermod -aG docker deployer
-usermod -aG sudo deployer
-
-# Setup SSH for deployer user
-mkdir -p /home/deployer/.ssh
-cp ~/.ssh/authorized_keys /home/deployer/.ssh/
-chown -R deployer:deployer /home/deployer/.ssh
-chmod 700 /home/deployer/.ssh
-chmod 600 /home/deployer/.ssh/authorized_keys
+sudo journalctl -u paleo-hebrew-bible -f
 ```
 
-### 1.3 Setup Application Directory
+### Check Nginx Status
 ```bash
-# Switch to deployer user
-su - deployer
-
-# Create application directory
-sudo mkdir -p /var/www/paleo-bible
-sudo chown deployer:deployer /var/www/paleo-bible
-cd /var/www/paleo-bible
-
-# Clone your repository (you'll set this up in Step 2)
-git clone https://github.com/YOUR_USERNAME/paleo-bible.git .
+sudo systemctl status nginx
 ```
 
-## 🔧 Step 2: GitHub Repository Setup
-
-### 2.1 Create GitHub Repository
-1. Go to GitHub and create a new repository named `paleo-bible`
-2. Make it public or private (your choice)
-
-### 2.2 Initialize Local Git Repository
+### Test Application Health
 ```bash
-# From your local development directory
-cd /Users/augustineodonkor/code/paleo
-
-# Initialize git if not already done
-git init
-git add .
-git commit -m "Initial commit: Complete Paleo Hebrew Bible application"
-
-# Add GitHub remote
-git remote add origin https://github.com/YOUR_USERNAME/paleo-bible.git
-git branch -M main
-git push -u origin main
+curl http://localhost/api/test
 ```
 
-### 2.3 Setup GitHub Secrets
-Go to your GitHub repository → Settings → Secrets and variables → Actions
+## 🛠️ Maintenance
 
-Add these secrets:
-- `LINODE_HOST`: Your server IP address
-- `LINODE_USER`: `deployer`
-- `LINODE_SSH_KEY`: Your private SSH key content
-
-## 🌐 Step 3: Domain Configuration
-
-### 3.1 DNS Setup
-Point your domain to your Linode server:
-```
-A record: @ → YOUR_SERVER_IP
-A record: www → YOUR_SERVER_IP
-```
-
-### 3.2 SSL Certificate (Let's Encrypt)
+### Update Application
 ```bash
-# On your server, install certbot
-sudo apt install certbot python3-certbot-nginx -y
-
-# Get SSL certificate
-sudo certbot --nginx -d your-domain.com -d www.your-domain.com
-
-# Update nginx.conf with your actual domain
-sed -i 's/your-domain.com/YOUR_ACTUAL_DOMAIN/g' /var/www/paleo-bible/nginx.conf
-```
-
-## 🚢 Step 4: Deployment
-
-### 4.1 Manual First Deployment
-```bash
-# On your server
-cd /var/www/paleo-bible
-
-# Build and start the application
-docker-compose up -d
-
-# Check status
-docker-compose ps
-docker-compose logs web
-```
-
-### 4.2 Setup Systemd Service (Optional)
-```bash
-# Create systemd service file
-sudo nano /etc/systemd/system/paleo-bible.service
-```
-
-Add this content:
-```ini
-[Unit]
-Description=Paleo Bible Docker Compose
-Requires=docker.service
-After=docker.service
-
-[Service]
-Type=oneshot
-RemainAfterExit=yes
-WorkingDirectory=/var/www/paleo-bible
-ExecStart=/usr/bin/docker-compose up -d
-ExecStop=/usr/bin/docker-compose down
-TimeoutStartSec=0
-
-[Install]
-WantedBy=multi-user.target
-```
-
-Enable the service:
-```bash
-sudo systemctl enable paleo-bible.service
-sudo systemctl start paleo-bible.service
-```
-
-## 🔄 Step 5: CI/CD Pipeline
-
-The GitHub Actions workflow is already configured. It will:
-1. Run tests on every push/PR
-2. Deploy to your Linode server on pushes to main branch
-3. Restart the application automatically
-
-### 5.1 Test the Pipeline
-```bash
-# Make a small change and push
-echo "# Paleo Hebrew Bible" > README.md
-git add README.md
-git commit -m "Add README"
-git push origin main
-```
-
-## 📊 Step 6: Monitoring and Maintenance
-
-### 6.1 Useful Commands
-```bash
-# View application logs
-docker-compose logs -f web
-
-# Restart application
-docker-compose restart web
-
-# Update application
+cd /var/www/paleo-hebrew-bible
 git pull origin main
-docker-compose build
-docker-compose up -d
-
-# Backup database
-docker-compose exec web sqlite3 /app/data/paleo_bible.db ".backup /app/data/backup.db"
+source venv/bin/activate  
+pip install -r requirements.txt
+sudo systemctl restart paleo-hebrew-bible
 ```
 
-### 6.2 Monitoring
-Set up basic monitoring:
+### Database Operations
 ```bash
-# Install htop for server monitoring
-sudo apt install htop -y
-
-# Check disk usage
-df -h
-
-# Check memory usage
-free -h
-
-# Check Docker container stats
-docker stats
+cd /var/www/paleo-hebrew-bible
+source venv/bin/activate
+python add_sample_facts.py  # Add sample God Facts
 ```
 
-## 🎯 Step 7: Custom Domain Features
-
-Once deployed, your application will be available at:
-- `https://your-domain.com` - Main application
-- Automatic HTTPS redirect from HTTP
-- Gzip compression for better performance
-- Security headers for protection
-
-## 🔧 Troubleshooting
-
-### Common Issues:
-1. **Port conflicts**: Ensure ports 80 and 443 are available
-2. **SSL issues**: Check certificate paths in nginx.conf
-3. **Database permissions**: Ensure Docker has write access to data directory
-4. **Memory issues**: Monitor RAM usage, consider upgrading Linode plan
-
-### Logs to Check:
+### Backup Database
 ```bash
-# Application logs
-docker-compose logs web
-
-# Nginx logs
-docker-compose logs nginx
-
-# System logs
-sudo journalctl -u paleo-bible.service
+cp /var/www/paleo-hebrew-bible/paleo_bible.db /backup/location/
 ```
 
-## 🎉 Success!
+## 🔐 Security Considerations
 
-Your Paleo Hebrew Bible application should now be:
-- ✅ Deployed on Linode
-- ✅ Accessible via your custom domain
-- ✅ Secured with HTTPS
-- ✅ Automatically deployed via GitHub Actions
-- ✅ Complete with 66 biblical books and Strong's Concordance
+1. **Change default admin password** after first login
+2. **Set up SSL/TLS** with Let's Encrypt:
+   ```bash
+   sudo apt install certbot python3-certbot-nginx
+   sudo certbot --nginx
+   ```
+3. **Configure firewall** properly
+4. **Keep system updated** regularly
+5. **Use strong SSH keys** only
+6. **Disable password authentication** in SSH
 
-Visit your domain to access your biblical study platform!
+## 🆘 Troubleshooting
 
-## 📚 Features Available:
-- Complete Hebrew Bible (39 books) with Paleo Hebrew script
-- New Testament (27 books) with Greek text and KJV translations  
-- Text-to-Speech with ancient Hebrew pronunciation
-- Strong's Concordance integration
-- Responsive web interface
-- RESTful API for programmatic access
+### Service Won't Start
+```bash
+sudo journalctl -u paleo-hebrew-bible --no-pager
+```
+
+### Port Already in Use
+```bash
+sudo lsof -i :5002
+sudo kill -9 <PID>
+```
+
+### Permission Issues
+```bash
+sudo chown -R $USER:$USER /var/www/paleo-hebrew-bible
+```
+
+### Database Issues
+```bash
+cd /var/www/paleo-hebrew-bible
+rm paleo_bible.db
+python -c "from app import app; from models import db; app.app_context().push(); db.create_all()"
+python add_sample_facts.py
+```
+
+## 📞 Support
+
+For issues and questions:
+- Check GitHub Issues
+- Review application logs
+- Test with curl commands
+- Verify service status
